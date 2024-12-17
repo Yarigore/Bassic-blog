@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/role")
@@ -30,6 +31,29 @@ public class RoleController {
     @PostMapping("create")
     public ResponseEntity<Role> createRole(@RequestBody Role role){
         return ResponseEntity.ok(roleService.createRole(role));
+    }
+
+    @PutMapping
+    public ResponseEntity<Role> putRole(@RequestParam Long id, @RequestBody Role role){
+
+        Role roleToChange;
+
+        if (Objects.equals(role.getId(), id)){
+
+            if (roleService.findRoleById(id).isPresent()){
+                roleToChange = roleService.findRoleById(id).get();
+                roleToChange.setRoleName(role.getRoleName());
+                return ResponseEntity.ok(roleService.createRole(roleToChange));
+            }
+            else return ResponseEntity.badRequest().build();
+        }
+        else return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Role> deleteRole(Role role){
+        roleService.deleteRole(role);
+        return ResponseEntity.ok(role);
     }
 
 }

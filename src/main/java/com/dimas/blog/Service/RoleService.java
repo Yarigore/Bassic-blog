@@ -30,4 +30,12 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
+    public void deleteRole(Role role){
+        roleRepository.delete(role);
+    }
+
+    public Optional<Role> findRoleById(Long id){
+        return roleRepository.findById(id);
+    }
+
 }
