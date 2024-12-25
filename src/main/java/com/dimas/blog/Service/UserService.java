@@ -13,15 +13,17 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<User> getUsers(String name){
+    public List<User> getUsers(){
         return userRepository.findAll();
     }
 
     public User createUser(User user){
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
-
+    public User deleteUser(User user){
+        userRepository.delete(user);
+        return user;
+    }
 
 }
