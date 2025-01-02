@@ -23,6 +23,13 @@ public class TagController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Tag> getTagById(@PathVariable Long id){
+        return tagService.getTagById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<Tag> createTag(@RequestBody Tag tag){
         return tagService.saveTag(tag)
@@ -55,6 +62,5 @@ public class TagController {
     public ResponseEntity<Tag> deleteTag(@RequestBody Tag tag){
         return ResponseEntity.ok(tagService.deleteTag(tag));
     }
-
 
 }

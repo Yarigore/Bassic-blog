@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/role")
@@ -17,41 +17,48 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping
-    public ResponseEntity<List<Role>> getRoles(){
-        return ResponseEntity.ok(roleService.getRoles());
+    public ResponseEntity<List<Role>> getRoles() {
+        return roleService.getRoles()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getRoleById(@RequestParam Long id){
+    public ResponseEntity<Role> getRoleById(@RequestParam Long id) {
         return roleService.getRolebyId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("create")
-    public ResponseEntity<Role> createRole(@RequestBody Role role){
-        return ResponseEntity.ok(roleService.createRole(role));
+    public ResponseEntity<Role> createRole(@RequestBody Role role) {
+        return roleService.saveRole(role)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PutMapping
-    public ResponseEntity<Role> putRole(@RequestParam Long id, @RequestBody Role role){
+    @PatchMapping("/{id}")
+    public ResponseEntity<Role> updateRole(@PathVariable Long id, @RequestBody Role role) {
+        Optional<Role> roleToChange = roleService.findRoleById(id);
 
-        Role roleToChange;
+        if (roleToChange.isPresent()) {
+            Role existingRole = roleToChange.get();
 
-        if (Objects.equals(role.getId(), id)){
-
-            if (roleService.findRoleById(id).isPresent()){
-                roleToChange = roleService.findRoleById(id).get();
-                roleToChange.setRoleName(role.getRoleName());
-                return ResponseEntity.ok(roleService.createRole(roleToChange));
+            if (role.getRoleName() != null) {
+                existingRole.setRoleName(role.getRoleName());
             }
-            else return ResponseEntity.badRequest().build();
+
+            return roleService.saveRole(existingRole)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.ok().build());
         }
-        else return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.notFound().build();
     }
+
 
     @DeleteMapping
-    public ResponseEntity<Role> deleteRole(Role role){
+    public ResponseEntity<Role> deleteRole(Role role) {
         roleService.deleteRole(role);
         return ResponseEntity.ok(role);
     }

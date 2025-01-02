@@ -14,27 +14,27 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public List<Role> getRoles(){
-        return roleRepository.findAll();
+    public Optional<List<Role>> getRoles() {
+        return Optional.of(roleRepository.findAll());
     }
 
-    public Optional<Role> getRolebyId(Long id){
+    public Optional<Role> getRolebyId(Long id) {
         return roleRepository.findById(id);
     }
 
-    public List<Role> getRolesbyName(String name){
-        return roleRepository.findRoleByRoleName(name);
+    public Optional<List<Role>> getRolesbyName(String name) {
+        return Optional.ofNullable(roleRepository.findRoleByRoleName(name));
     }
 
-    public Role createRole(Role role){
-        return roleRepository.save(role);
+    public Optional<Role> saveRole(Role role) {
+        return Optional.of(roleRepository.save(role));
     }
 
-    public void deleteRole(Role role){
+    public void deleteRole(Role role) {
         roleRepository.delete(role);
     }
 
-    public Optional<Role> findRoleById(Long id){
+    public Optional<Role> findRoleById(Long id) {
         return roleRepository.findById(id);
     }
 

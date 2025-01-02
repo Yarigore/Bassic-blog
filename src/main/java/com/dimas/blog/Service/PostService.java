@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -35,12 +36,16 @@ public class PostService {
     @Autowired
     private ImgbbService imgbbService;
 
-    public List<Post> getPosts() {
-        return postRepository.findAll();
+    public Optional<List<Post>> getPosts() {
+        return Optional.of(postRepository.findAll());
     }
 
-    public Post createPost(MultipartFile file, String title, String content,
-                           Long authorId, Long categoryId, List<Long> tagIds) throws IOException {
+    public Optional<Post> getPostById(Long id){
+        return postRepository.findById(id);
+    }
+
+    public Optional<Post> savePost(MultipartFile file, String title, String content,
+                         Long authorId, Long categoryId, List<Long> tagIds) throws IOException {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
@@ -72,9 +77,8 @@ public class PostService {
         // Asegurarse de que los comentarios estén vacíos
         post.setComments(Collections.emptyList());
 
-        return postRepository.save(post);
+        return Optional.of(postRepository.save(post));
     }
-
 
     public Post deletePost(Post post) {
         postRepository.delete(post);

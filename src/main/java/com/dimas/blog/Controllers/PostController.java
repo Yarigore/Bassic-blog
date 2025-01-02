@@ -16,20 +16,29 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
 
     @Autowired
+    public PostService postService;
+    @Autowired
     private ImgbbService imgbbService;
 
-    @Autowired
-    public PostService postService;
-
     @GetMapping
-    public ResponseEntity<List<Post>> getPosts(){
-        return ResponseEntity.ok(postService.getPosts());
+    public ResponseEntity<List<Post>> getPosts() {
+        return postService.getPosts()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+        return postService.getPostById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -41,13 +50,26 @@ public class PostController {
             @RequestParam("categoryId") Long categoryId,
             @RequestParam("tagIds") List<Long> tagIds) throws IOException {
 
-        Post post = postService.createPost(file, title, content, authorId, categoryId, tagIds);
-        return ResponseEntity.ok(post);
+        Optional<Post> post = postService.savePost(file, title, content, authorId, categoryId, tagIds);
+        return post
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
     }
 
+    @PatchMapping
+    public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post post){
+
+        Optional<Post> postToChange = postService.getPostById(id);
+
+        if (postToChange.isPresent()){
+
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 
     @DeleteMapping
-    public ResponseEntity<Post> deletePost(@RequestParam Post post){
+    public ResponseEntity<Post> deletePost(@RequestParam Post post) {
         return ResponseEntity.ok(postService.deletePost(post));
     }
 
