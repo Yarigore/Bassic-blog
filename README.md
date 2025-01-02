@@ -1,45 +1,56 @@
 # BassicBlog
 
-BassicBlog es un sistema avanzado de gestión de blogs desarrollado con **Java Spring Boot**. Este proyecto incluye funcionalidades CRUD completas para publicaciones, categorías, etiquetas, usuarios y roles. Además, permite la subida de imágenes mediante la integración con **Imgbb** y utiliza una base de datos PostgreSQL en un contenedor Docker.
+BassicBlog es un sistema avanzado de gestión de blogs desarrollado con Java Spring Boot. Este proyecto incluye funcionalidades CRUD completas para publicaciones, categorías, etiquetas, usuarios y roles. Además, permite la subida de imágenes mediante la integración con Imgbb y utiliza una base de datos PostgreSQL en un contenedor Docker.
 
 ## Funcionalidades principales
 
-1. **Gestión de publicaciones**: Crear, listar y eliminar publicaciones, incluyendo la subida de imágenes.
-2. **Gestión de categorías**: Organizar las publicaciones en categorías.
-3. **Gestión de etiquetas**: Asignar etiquetas a las publicaciones para mejorar la búsqueda.
-4. **Gestión de usuarios**: Crear y administrar usuarios.
-5. **Gestión de roles**: Crear, modificar y eliminar roles.
-6. **Subida de imágenes**: Integración con **Imgbb** para el manejo de imágenes.
+- **Gestión de publicaciones**: Crear, listar, actualizar y eliminar publicaciones, incluyendo la subida de imágenes.
+- **Gestión de categorías**: Organizar las publicaciones en categorías, con opciones para crear, listar, actualizar y eliminar categorías.
+- **Gestión de etiquetas**: Asignar etiquetas a las publicaciones para mejorar la búsqueda. Incluye funcionalidades para crear, listar, actualizar y eliminar etiquetas.
+- **Gestión de usuarios**: Crear, listar, actualizar y eliminar usuarios.
+- **Gestión de roles**: Crear, modificar, eliminar y listar roles.
+- **Subida de imágenes**: Integración con Imgbb para el manejo de imágenes.
 
 ## Estructura de endpoints
 
-### Publicaciones (`/post`)
-- **GET** `/post`: Obtiene todas las publicaciones.
-- **POST** `/post`: Crea una publicación con imagen, título, contenido, autor, categoría y etiquetas.
-- **DELETE** `/post`: Elimina una publicación específica.
-- **POST** `/post/upload`: Sube una imagen a Imgbb y devuelve la URL.
+### Publicaciones (/post)
 
-### Categorías (`/category`)
-- **GET** `/category`: Obtiene todas las categorías.
-- **POST** `/category`: Crea una nueva categoría.
-- **DELETE** `/category`: Elimina una categoría existente.
+- `GET /post`: Obtiene todas las publicaciones.
+- `POST /post`: Crea una publicación con imagen, título, contenido, autor, categoría y etiquetas.
+- `DELETE /post`: Elimina una publicación específica.
+- `POST /post/upload`: Sube una imagen a Imgbb y devuelve la URL.
 
-### Etiquetas (`/tag`)
-- **GET** `/tag`: Obtiene todas las etiquetas.
-- **POST** `/tag`: Crea una nueva etiqueta.
-- **DELETE** `/tag`: Elimina una etiqueta existente.
+### Categorías (/category)
 
-### Usuarios (`/user`)
-- **GET** `/user`: Obtiene todos los usuarios.
-- **POST** `/user`: Crea un nuevo usuario.
-- **DELETE** `/user`: Elimina un usuario existente.
+- `GET /category`: Obtiene todas las categorías.
+- `GET /category/{id}`: Obtiene una categoría por su ID.
+- `POST /category`: Crea una nueva categoría.
+- `PATCH /category/{id}`: Actualiza una categoría existente.
+- `DELETE /category`: Elimina una categoría específica.
 
-### Roles (`/role`)
-- **GET** `/role`: Obtiene todos los roles.
-- **GET** `/role/{id}`: Obtiene un rol por su ID.
-- **POST** `/role/create`: Crea un nuevo rol.
-- **PUT** `/role`: Actualiza un rol existente.
-- **DELETE** `/role`: Elimina un rol.
+### Etiquetas (/tag)
+
+- `GET /tag`: Obtiene todas las etiquetas.
+- `GET /tag/{id}`: Obtiene una etiqueta por su ID.
+- `POST /tag`: Crea una nueva etiqueta.
+- `PATCH /tag/{id}`: Actualiza una etiqueta existente.
+- `DELETE /tag`: Elimina una etiqueta existente.
+
+### Usuarios (/user)
+
+- `GET /user`: Obtiene todos los usuarios.
+- `GET /user/{id}`: Obtiene un usuario por su ID.
+- `POST /user`: Crea un nuevo usuario.
+- `PATCH /user/{id}`: Actualiza un usuario existente.
+- `DELETE /user`: Elimina un usuario específico.
+
+### Roles (/role)
+
+- `GET /role`: Obtiene todos los roles.
+- `GET /role/{id}`: Obtiene un rol por su ID.
+- `POST /role/create`: Crea un nuevo rol.
+- `PATCH /role/{id}`: Actualiza un rol existente.
+- `DELETE /role`: Elimina un rol.
 
 ## Configuración
 
@@ -108,7 +119,7 @@ El proyecto utiliza **Imgbb** para gestionar la subida de imágenes. El token de
 
 1. Clona el repositorio:
    ```bash
-   git clone <URL-del-repo>
+   git clone https://github.com/Yarigore/Bassic-blog.git
    cd BassicBlog
    ```
 
@@ -132,5 +143,66 @@ El proyecto utiliza **Imgbb** para gestionar la subida de imágenes. El token de
 
 ---
 
-¿Te gustaría que agreguemos ejemplos de peticiones con cURL o Postman para probar los endpoints? También podría incluir un diagrama de arquitectura si es necesario.
+## Ejemplos de peticiones
 
+### Con Postman
+
+#### 1.Crear una nueva publicación
+
+- Método: POST
+
+- URL: http://localhost:8088/post
+
+- Body (raw, JSON):
+
+```
+{
+  "title": "Mi primera publicación",
+  "content": "Contenido de la publicación.",
+  "author": "Autor 1",
+  "category": "Categoría 1",
+  "tags": ["tag1", "tag2"]
+}
+```
+
+### 2.Subir una imagen
+
+- Método: POST
+- URL: http://localhost:8088/post/upload
+- Body:
+  - Seleccionar la opción form-data
+  - Key: image, Value: Seleccionar archivo.
+
+
+
+### Con cURL
+
+#### 1. Obtener todas las publicaciones
+
+```bash
+curl -X GET http://localhost:8088/post
+```
+
+### 2. Crear una nueva publicación
+```bash
+curl -X POST http://localhost:8088/post \
+    -H "Content-Type: application/json" \
+    -d '{
+        "title": "Mi primera publicación",
+        "content": "Contenido de la publicación.",
+        "author": "Autor 1",
+        "category": "Categoría 1",
+        "tags": ["tag1", "tag2"]
+    }'
+```
+
+#### 3. Subir una imagen
+```bash
+curl -X POST http://localhost:8088/post/upload \
+    -F "image=@/path/to/your/image.jpg"
+```
+
+#### 4. Obtener todas las categorías
+```bash
+curl -X GET http://localhost:8088/category
+```
