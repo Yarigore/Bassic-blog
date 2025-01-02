@@ -1,5 +1,6 @@
 package com.dimas.blog.Service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 public class ImgbbService {
 
     private final String IMGBB_API_URL = "https://api.imgbb.com/1/upload";
-    private final String API_KEY = "adbe48b6f1ccf0cfde757e0f2b70e15f";
+
+    @Value("${imgbb.api.token}")
+    private String API_KEY;
 
     public String uploadImage(String base64Image) {
         RestTemplate restTemplate = new RestTemplate();
